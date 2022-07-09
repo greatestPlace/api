@@ -2,3 +2,4 @@
 
 /greatestplaces/target
 /.vscode
+/greatestplaces/src/main/resources/application.properties
