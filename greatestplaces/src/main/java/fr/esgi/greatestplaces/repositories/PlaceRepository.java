@@ -1,9 +1,12 @@
 package fr.esgi.greatestplaces.repositories;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
+
 import fr.esgi.greatestplaces.entities.Place;
 
 public interface PlaceRepository extends JpaRepository<Place, Long> {
@@ -13,7 +16,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
 
     List<Place> findAllByUserId(Long userId);
 
-    List<Place> findAllByNameLike(String name);
+    List<Place> findAllByNameContainsIgnoreCase(@Param("name") String name);
 
-    List<Place> findAllByUserIdAndNameLikeIgnoreCase(Long userId, String name);
+    List<Place> findByUserIdAndNameContainsIgnoreCase(@Param("user_id") Long userId,@Param("name") String name);
 }

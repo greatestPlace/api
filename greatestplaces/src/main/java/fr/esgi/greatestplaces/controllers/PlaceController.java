@@ -1,7 +1,9 @@
 package fr.esgi.greatestplaces.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -44,9 +46,28 @@ public class PlaceController {
         return this.placeRepository.save(place);
     }
 
+    @GetMapping(value="/{id}")
+    public Place getPlaceById(@PathVariable Long id) {
+        Place place = this.placeRepository.findById(id).orElse(null);
+        if (place == null) {
+            throw new ResponseStatusException(NOT_FOUND, "Place not found");
+        }
+        return place;
+    }
 
-    @GetMapping(value="/{userId}")
+
+    @GetMapping(value="/userId/{userId}")
     public List<Place> getPlacesByUserId(@PathVariable Long userId) {
         return this.placeRepository.findAllByUserId(userId);
+    }
+
+    @GetMapping(value="/{userId}/{name}")
+    public List<Place> getPlacesByUserIdAndName(@PathVariable Long userId, @PathVariable String name) {
+        return this.placeRepository.findByUserIdAndNameContainsIgnoreCase(userId, name);
+    }
+
+    @GetMapping(value="/nameLike/{name}")
+    public List<Place> getPlacesByName(@PathVariable String name) {
+        return this.placeRepository.findAllByNameContainsIgnoreCase(name);
     }
 }
