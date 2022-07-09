@@ -36,7 +36,7 @@ public class PlaceController {
         }
 
         place.setUserId(currentUser.getId());
-        return placeRepository.save(place);
+        return this.placeRepository.save(place);
     }
     
 }
