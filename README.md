@@ -10,3 +10,10 @@ Launch this command in pom.xml folder :
 ``
 mvn spring-boot:run
 ``
+
+### Docker
+Run the script :
+
+``
+./run.sh
+``
