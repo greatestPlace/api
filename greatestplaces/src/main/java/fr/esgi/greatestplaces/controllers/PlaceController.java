@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -85,11 +86,17 @@ public class PlaceController {
             throw new ResponseStatusException(NOT_ACCEPTABLE, "User not connected");
         }
 
+
         Place placeToUpdate = this.placeRepository.findById(place.getId()).orElse(null);
         if (placeToUpdate == null) {
             throw new ResponseStatusException(NOT_FOUND, "Place not found");
         }
-        
+
+
+        if( !Objects.equals(currentUser.getId(), placeToUpdate.getUserId())) {
+            throw new ResponseStatusException(NOT_ACCEPTABLE, "You can't update a place you don't own");
+        }
+
         if (place.getName() != null) {
             placeToUpdate.setName(place.getName());
         }
@@ -129,7 +136,7 @@ public class PlaceController {
         if (placeToDelete == null) {
             throw new ResponseStatusException(NOT_FOUND, "Place not found");
         }
-        if (placeToDelete.getUserId() != currentUser.getId()) {
+        if (!Objects.equals(placeToDelete.getUserId(), currentUser.getId())) {
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Not your place");
         }
         this.placeRepository.delete(placeToDelete);
