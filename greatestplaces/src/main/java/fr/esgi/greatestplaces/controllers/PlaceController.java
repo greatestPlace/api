@@ -86,6 +86,9 @@ public class PlaceController {
             throw new ResponseStatusException(NOT_ACCEPTABLE, "User not connected");
         }
 
+        if(place.getId() == null) {
+            throw new ResponseStatusException(NOT_ACCEPTABLE, "Place id is null");
+        }
 
         Place placeToUpdate = this.placeRepository.findById(place.getId()).orElse(null);
         if (placeToUpdate == null) {
