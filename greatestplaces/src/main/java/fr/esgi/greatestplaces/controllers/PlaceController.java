@@ -65,12 +65,21 @@ public class PlaceController {
     }
 
     @GetMapping(value="/{userId}/{name}")
-    public List<Place> getPlacesByUserIdAndName(@PathVariable Long userId, @PathVariable String name) {
+    public List<Place> getPlacesByUserIdAndNameContains(@PathVariable Long userId, @PathVariable String name) {
         return this.placeRepository.findByUserIdAndNameContainsIgnoreCase(userId, name);
     }
 
+    @GetMapping(value="/myPlaces")
+    public List<Place> getMyPlaces() {
+        User currentUser = authService.getAuthUser();
+        if (currentUser == null) {
+            throw new ResponseStatusException(NOT_ACCEPTABLE, "User not connected");
+        }
+        return this.placeRepository.findAllByUserId(currentUser.getId());
+    }
+
     @GetMapping(value="/nameLike/{name}")
-    public List<Place> getPlacesByName(@PathVariable String name) {
+    public List<Place> getPlacesByNameContains(@PathVariable String name) {
         return this.placeRepository.findAllByNameContainsIgnoreCase(name);
     }
 
