@@ -19,4 +19,6 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     List<Place> findAllByNameContainsIgnoreCase(@Param("name") String name);
 
     List<Place> findByUserIdAndNameContainsIgnoreCase(@Param("user_id") Long userId,@Param("name") String name);
+
+    List<Place> findAll();
 }

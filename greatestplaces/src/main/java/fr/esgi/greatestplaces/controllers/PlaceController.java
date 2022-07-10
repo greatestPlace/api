@@ -70,4 +70,9 @@ public class PlaceController {
     public List<Place> getPlacesByName(@PathVariable String name) {
         return this.placeRepository.findAllByNameContainsIgnoreCase(name);
     }
+
+    @GetMapping(value="/all")
+    public List<Place> getAllPlaces() {
+        return this.placeRepository.findAll();
+    }
 }
