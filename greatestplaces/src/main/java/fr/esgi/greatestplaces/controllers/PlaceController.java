@@ -75,4 +75,38 @@ public class PlaceController {
     public List<Place> getAllPlaces() {
         return this.placeRepository.findAll();
     }
+
+    @PostMapping(value="/update")
+    public Place updatePlace(@RequestBody Place place) {
+        Place placeToUpdate = this.placeRepository.findById(place.getId()).orElse(null);
+        if (placeToUpdate == null) {
+            throw new ResponseStatusException(NOT_FOUND, "Place not found");
+        }
+        if (place.getName() != null) {
+            placeToUpdate.setName(place.getName());
+        }
+        if (place.getDescription() != null) {
+            placeToUpdate.setDescription(place.getDescription());
+        }
+        if (place.getLatitude() != null) {
+            placeToUpdate.setLatitude(place.getLatitude());
+        }
+        if (place.getLongitude() != null) {
+            placeToUpdate.setLongitude(place.getLongitude());
+        }
+        if (place.getCity() != null) {
+            placeToUpdate.setCity(place.getCity());
+        }
+        if (place.getCountry() != null) {
+            placeToUpdate.setCountry(place.getCountry());
+        }
+        if (place.getAddress() != null) {
+            placeToUpdate.setAddress(place.getAddress());
+        }
+        if (place.getZipCode() != null) {
+            placeToUpdate.setZipCode(place.getZipCode());
+        }
+        
+        return this.placeRepository.save(placeToUpdate);
+    }
 }
