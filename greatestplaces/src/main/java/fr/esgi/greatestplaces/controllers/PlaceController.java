@@ -13,9 +13,11 @@ import fr.esgi.greatestplaces.entities.User;
 import fr.esgi.greatestplaces.repositories.PlaceRepository;
 import fr.esgi.greatestplaces.services.AuthService;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -76,12 +78,18 @@ public class PlaceController {
         return this.placeRepository.findAll();
     }
 
-    @PostMapping(value="/update")
+    @PutMapping()
     public Place updatePlace(@RequestBody Place place) {
+        User currentUser = authService.getAuthUser();
+        if (currentUser == null) {
+            throw new ResponseStatusException(NOT_ACCEPTABLE, "User not connected");
+        }
+
         Place placeToUpdate = this.placeRepository.findById(place.getId()).orElse(null);
         if (placeToUpdate == null) {
             throw new ResponseStatusException(NOT_FOUND, "Place not found");
         }
+        
         if (place.getName() != null) {
             placeToUpdate.setName(place.getName());
         }
@@ -106,7 +114,24 @@ public class PlaceController {
         if (place.getZipCode() != null) {
             placeToUpdate.setZipCode(place.getZipCode());
         }
-        
+
         return this.placeRepository.save(placeToUpdate);
+    }
+
+    @DeleteMapping(value="/{id}")
+    public void deletePlace(@PathVariable Long id) {
+        User currentUser = authService.getAuthUser();
+        if (currentUser == null) {
+            throw new ResponseStatusException(NOT_ACCEPTABLE, "User not connected");
+        }
+
+        Place placeToDelete = this.placeRepository.findById(id).orElse(null);
+        if (placeToDelete == null) {
+            throw new ResponseStatusException(NOT_FOUND, "Place not found");
+        }
+        if (placeToDelete.getUserId() != currentUser.getId()) {
+            throw new ResponseStatusException(NOT_ACCEPTABLE, "Not your place");
+        }
+        this.placeRepository.delete(placeToDelete);
     }
 }
